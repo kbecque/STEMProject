@@ -1,26 +1,44 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Werknemers</title>
-</head>
-<body>
-    <h1>Overzicht van Werknemers</h1>
+<?php
+session_start(); // Sessie starten
 
-    <?php
-// Database gegevens
-$host = "localhost"; // Of jouw server
+// Controleer of de gebruiker is ingelogd
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: login.php"); // Als niet ingelogd, terug naar login
+    exit;
+}
+
+// Verbind met de database en haal de werknemersgegevens op
+$host = "localhost";
 $dbnaam = "bedrijf";
-$gebruikersnaam = "root"; // Aanpassen indien nodig
-$wachtwoord = ""; // Aanpassen indien nodig
+$gebruikersnaam = "root";
+$wachtwoord = "";
 
 // Verbinding maken met MySQL
 $conn = new mysqli($host, $gebruikersnaam, $wachtwoord, $dbnaam);
 
-// Controleer verbinding
 if ($conn->connect_error) {
     die("Verbinding mislukt: " . $conn->connect_error);
 }
 
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Werknemers</title>
+    <script>
+        // JavaScript event wanneer het tabblad of de browser wordt gesloten
+        window.onunload = function() {
+            // Maak een asynchrone request naar logout.php
+            navigator.sendBeacon('logout.php');
+        };
+    </script>
+</head>
+<body>
+
+<h1>Overzicht van Werknemers</h1>
+
+<?php
 // Query om alle werknemers op te halen
 $sql = "SELECT id, naam, functie, salaris FROM werknemers";
 $result = $conn->query($sql);
@@ -48,10 +66,16 @@ if ($result->num_rows > 0) {
 } else {
     echo "Geen resultaten gevonden.";
 }
-
 // Sluit de databaseverbinding
 $conn->close();
 ?>
+
+<br><br>
+<!-- Logout knop -->
+<form action="logout.php" method="post">
+    <input type="submit" value="Uitloggen">
+</form>
+
 
 </body>
 </html>
