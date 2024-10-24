@@ -1,9 +1,12 @@
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="opmaak.css">
 </head>
 <body>
+
     <h2>Login</h2>
     <form method="post" action="login.php">
         <label>Gebruikersnaam:</label>
@@ -13,6 +16,7 @@
         <input type="submit" name="login" value="Login">
         <?php
 session_start(); // Start de sessie
+
 
 // Database gegevens
 $host = "localhost";
